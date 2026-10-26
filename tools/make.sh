@@ -1,0 +1,2 @@
+sed 's#^toTitle();$#toTitle();window.__t={startGame,CLASSES,T,TP,tileUnder,get P(){return P},get en(){return enemies},get gems(){return gems},keys,update,render,get st(){return state},get time(){return time},get SI(){return SI},get kills(){return kills},choose,get opts(){return lvOpts},nextStage,setDI:i=>{DI=i},get disc(){return discovered.size}};#' ../index.html > game.html
+grep -c "window.__t" game.html
