@@ -22,6 +22,7 @@ require('fs').mkdirSync(OUT,{recursive:true});
         P.hp=P.maxhp*.72;const a=f/170;
         for(const k of ['KeyA','KeyD','KeyW','KeyS'])t.keys[k]=0;
         if(Math.cos(a)>.3)t.keys.KeyD=1;if(Math.cos(a)<-.3)t.keys.KeyA=1;if(Math.sin(a)>.3)t.keys.KeyS=1;if(Math.sin(a)<-.3)t.keys.KeyW=1;
+        if(f%100===0)t.tryDash();
         t.update(1/60);if(f%3===0)t.render();
       }
       for(const k of ['KeyA','KeyD','KeyW','KeyS'])t.keys[k]=0;

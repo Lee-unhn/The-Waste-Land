@@ -55,11 +55,11 @@ body{margin:0;background:var(--ink);color:var(--bone);font-family:var(--f-ui);to
 .tbtn:hover{box-shadow:inset 0 0 0 1px var(--volt)}
 #terrain{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);font-size:12px;background:rgba(15,12,23,.78);border:2px solid #000;padding:3px 8px}
 
-#chain{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);font-size:22px;color:var(--c,#ffb35c);text-shadow:2px 2px 0 #000,-1px -1px 0 #000;pointer-events:none;z-index:6;white-space:nowrap}
+#chain{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);font-size:22px;color:var(--c,#ffb35c);text-shadow:2px 2px 0 #000,-1px -1px 0 #000;pointer-events:none;z-index:6;white-space:nowrap}
 #chain.pop{animation:chainpop .25s ease-out}
 #chain small{font-size:12px;color:var(--bone);margin-left:6px}
 @keyframes chainpop{0%{transform:translateX(-50%) scale(1.5)}100%{transform:translateX(-50%) scale(1)}}
-#toasts{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 100px);display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#toasts{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 128px);display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .toast{background:var(--slab);border:2px solid #000;box-shadow:inset 0 0 0 1px var(--volt);padding:5px 10px;font-size:13px;max-width:100%;animation:toast 3s forwards}
 .toast small{color:var(--volt);margin-right:8px;font-size:11px;letter-spacing:.1em}
 .toast.big{font-size:18px;color:var(--blood);box-shadow:inset 0 0 0 1px var(--blood)}
@@ -670,7 +670,7 @@ const bossTimes=()=>[150,ST().len-60];
 function shake(t,m){if(RM)return;shakeM=shakeT>0?Math.max(shakeM,m):m;shakeT=Math.max(shakeT,t)}
 function part(x,y,vx,vy,life,c,s=1){if(parts.length>700)return;parts.push({x,y,vx,vy,life,max:life,c,s})}
 function burst(x,y,n,cols,sp=40,sz=1){for(let k=0;k<n;k++){const a=R()*TAU,s=sp*(.3+R()*.7);part(x,y,Math.cos(a)*s,Math.sin(a)*s-10,.3+R()*.4,cols[k%cols.length],sz)}}
-function dmgNum(x,y,v,c){if(texts.length>70)return;texts.push({x:x+(R()-.5)*5,y,s:String(Math.max(1,Math.round(v))),c,t:0,max:.6})}
+function dmgNum(x,y,v,c){if(texts.length>40)return;texts.push({x:x+(R()-.5)*5,y,s:String(Math.max(1,Math.round(v))),c,t:0,max:.6})}
 function toast(html,cls){const t=document.createElement('div');t.className='toast'+(cls?' '+cls:'');t.innerHTML=html;const box=$('toasts');box.appendChild(t);while(box.children.length>3)box.firstChild.remove();setTimeout(()=>t.remove(),3000)}
 function disc(k){
   if(state!=='play'||discovered.has(k))return;
@@ -1267,8 +1267,11 @@ function drawTexts(){
   for(const x of texts){
     const k=x.t/x.max,a=k>.65?1-(k-.65)/.35:1,py=Math.round(x.y-cam.y-k*14),px=x.x-cam.x;
     ctx.globalAlpha=a;
-    let ox=Math.round(px-(x.s.length*4-1)/2);
-    for(const ch of x.s){const g=DIG[ch.charCodeAt(0)-48];if(g){for(let i=0;i<15;i++)if(g[i]==='1'){ctx.fillStyle='#000';ctx.fillRect(ox+i%3+1,py+(i/3|0)+1,1,1);ctx.fillStyle=x.c;ctx.fillRect(ox+i%3,py+(i/3|0),1,1)}}ox+=4}
+    // shadow pass first, then the digits, so a shadow never covers a neighbouring stroke
+    for(const pass of [0,1]){
+      let ox=Math.round(px-(x.s.length*4-1)/2)+(pass?0:1);ctx.fillStyle=pass?x.c:'#000';
+      for(const ch of x.s){const g=DIG[ch.charCodeAt(0)-48];if(g)for(let i=0;i<15;i++)if(g[i]==='1')ctx.fillRect(ox+i%3,py+(i/3|0)+(pass?0:1),1,1);ox+=4}
+    }
   }
   ctx.globalAlpha=1;
 }
