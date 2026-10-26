@@ -22,6 +22,8 @@ const [cls=0,diff=1,seeds=1]=process.argv.slice(2).map(Number);
     let ba=null,bs=-9;for(let k=0;k<8;k++){const a=k*Math.PI/4,cx=Math.cos(a),cy=Math.sin(a);if(danger(P.x+cx*10,P.y+cy*10))continue;const sc=cx*fx+cy*fy;if(sc>bs){bs=sc;ba=[cx,cy]}}
     for(const k of ['KeyA','KeyD','KeyW','KeyS'])t.keys[k]=0;
     if(ba&&(fl>0||best)){if(ba[0]<-.3)t.keys.KeyA=1;if(ba[0]>.3)t.keys.KeyD=1;if(ba[1]<-.3)t.keys.KeyW=1;if(ba[1]>.3)t.keys.KeyS=1}
+    // dash out when crowded; the trail is left between the bot and the pack
+    if(t.tryDash){let near=0;for(const e of t.en)if(Math.hypot(e.x-P.x,e.y-P.y)<26)near++;if(near>=3)t.tryDash()}
   }
   function pick(){const o=t.opts;let bi=0,bs=-1;o.forEach((x,i)=>{const s=x.t==='w'&&x.id===t.CLASSES[cls].w?20:x.t==='f'?10:x.t==='w'&&!x.nw?5:x.t==='w'?3:x.t==='p'?(['power','haste','area','vigor'].includes(x.id)?2.5:1.5):0;if(s>bs){bs=s;bi=i}});t.choose(bi)}
   const evo=[],dl=[];
@@ -34,7 +36,7 @@ const [cls=0,diff=1,seeds=1]=process.argv.slice(2).map(Number);
     if(frame%(60*30)===0){log.push({s:t.SI+1,t:Math.round(t.time),hp:Math.round(t.P.hp)+'/'+t.P.maxhp,lv:t.P.lvl,en:t.en.length,hurt30:Math.round(hurt),w:Object.entries(t.P.weps).map(([k,v])=>k+v.lv).join(',')});hurt=0}
   }
   const lt=t.time;const agg={};for(const [tt,a,k] of dl)if(tt>lt-8)agg[k]=Math.round((agg[k]||0)+a);
-  return {deathSrc:agg,result:t.st,stage:t.SI+1,time:Math.round(t.time),lvl:t.P.lvl,kills:t.kills,disc:t.disc,evo:[...new Set(evo)],log};
+  return {terrainPct:Math.round(t.terrainKills/Math.max(1,t.kills)*100),deathSrc:agg,result:t.st,stage:t.SI+1,time:Math.round(t.time),lvl:t.P.lvl,kills:t.kills,disc:t.disc,evo:[...new Set(evo)],log};
  },[cls,diff]);
  console.log(JSON.stringify(r));
  }
