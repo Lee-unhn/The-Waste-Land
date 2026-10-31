@@ -4,6 +4,8 @@
 
 按下**元素衝刺**，你會沿路留下火牆、冰路、壕溝或電場，把敵人引進自己畫好的陷阱。被地形殺死的敵人會多掉經驗，連續擊殺還會觸發「地形連鎖」。
 
+**線上遊玩：https://lee-unhn.github.io/The-Waste-Land/**
+
 整個遊戲是單一個 `index.html`，沒有任何相依套件，也不需要建置。直接用瀏覽器打開就能玩，手機也可以。
 
 ![主選單](docs/screenshots/title.png)
@@ -54,7 +56,7 @@
 4. 撐到關卡時間結束就過關。等級和法術會帶到下一關，進關時回復一半生命。
 5. 撐過四個關卡就全破。
 
-本 repo 為私有，目前沒有線上版。`.github/workflows/pages.yml` 是保留的部署設定：日後改為公開時，在 repo 的 **Settings → Pages** 把 **Source** 設為 **GitHub Actions**，之後每次推到 `main` 就會把 `index.html` 發布到 GitHub Pages。
+線上版由 `.github/workflows/pages.yml` 自動部署到 GitHub Pages：每次推到 `main`，GitHub Actions 就會把 `index.html` 發布到上面的網址。
 
 ## 遊戲內容
 
